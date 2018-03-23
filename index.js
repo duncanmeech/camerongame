@@ -91,6 +91,15 @@ class CameronsGame {
 
     s = new Sprite( 'blue', 25, 25, this.arena.element);
     s.positionSprite(250, 250);
+
+    var xpos1 = 0;
+    s = new Sprite('blue', 50, 50, this.arena.element);
+    const mainLoop = () => {
+      xpos1 += 1;
+      s.positionSprite(xpos1,100);
+      requestAnimationFrame(mainLoop);
+    }
+    requestAnimationFrame(mainLoop);
   }
 
 
