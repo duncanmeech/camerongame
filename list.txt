@@ -1,0 +1,41 @@
+
+1. Flow chart for entire game
+
+2. Flow chart for intro screen
+
+3. Flow chart for game
+
+4. Flow chart for high score screen
+
+
+a. Pick word from random list.
+
+b. start game loop
+
+c. randomly start letter moving across screen
+
+d. if...
+
+========================================================================================
+
+Programming
+
+- Basic Intro Screen HTML/CSS
+  - Some simple text with a gradient background ( learn about CSS gradients )
+
+- Game
+   - Picking a word from random list ( sorted randomly )
+   - Setting up random letters to play ( sorting ! )
+   - Write sprite class with velocity
+   - Write click handlers
+   - Write timer
+   - Write scoring functions
+   - Write animation for click handling.
+   - Write you lose message !
+   - Write you win message !
+
+- Write High Screen HTML/CSS
+  ( sorting high scores and entering a name ).
+
+
+
