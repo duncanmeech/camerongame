@@ -26,21 +26,34 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .arena {
   width: 800px;
   height: 600px;
   background-color: lightgray;
-  position: relative;
+  position: relative !important;
+  overflow: hidden;
 }
 
 .sprite {
   position: absolute;
 }
+
 .red {
-  background-color: red;
+  border-radius: 100%;
+  border: 8px solid red;
+  background: linear-gradient(to right, red , yellow);
 }
+
 .blue {
-  background-color:blue;
+  border-radius: 100%;
+  border: 8px solid blue;
 }
+
+.green {
+  border-radius: 100%;
+  border: 8px solid green;
+}
+

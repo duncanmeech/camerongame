@@ -1,4 +1,3 @@
-
 const states = {
   startScreen: 'startScreen',
   gameScreen: 'gameScreen',
@@ -15,11 +14,17 @@ class Sprite {
   constructor(className, w, h, arena) {
     this.w = w;
     this.h = h;
+    this.xs = 0;
+    this.ys = 0;
     this.element = D.createElement('div');
     this.element.className = `sprite ${className}`;
     this.element.style.width = w + 'px';
     this.element.style.height = h + 'px';
     arena.appendChild(this.element);
+  }
+
+  kill() {
+    this.element.remove();
   }
 
   positionSprite(x, y) {
@@ -29,6 +34,15 @@ class Sprite {
     this.element.style.top = y + 'px';
   }
 
+  setSpeed(xs, ys) {
+    this.xs = xs;
+    this.ys = ys;
+
+  }
+
+  update() {
+    this.positionSprite(this.x + this.xs, this.y + this.ys)
+  }
 }
 
 class CameronsGame {
@@ -83,26 +97,54 @@ class CameronsGame {
 
     this.arena = new Sprite('arena', AW, AH, B);
 
-    let s = new Sprite('red', 100, 100, this.arena.element);
-    s.positionSprite(100, 100);
+    B.insertAdjacentHTML('beforeend', `
+      <br>
+      <button id="quit">End</button>
+    `);
 
-    s = new Sprite('red', 50, 50, this.arena.element);
-    s.positionSprite(200, 200);
+    B.querySelector('#quit').addEventListener('click', () => {
+      this.nextState(states.startScreen);
+    });
 
-    s = new Sprite( 'blue', 25, 25, this.arena.element);
-    s.positionSprite(250, 250);
+    this.npc = [];
+    this.stars = [];
+    requestAnimationFrame(this.gameLoop);
 
-    var xpos1 = 0;
-    s = new Sprite('blue', 50, 50, this.arena.element);
-    const mainLoop = () => {
-      xpos1 += 1;
-      s.positionSprite(xpos1,100);
-      requestAnimationFrame(mainLoop);
-    }
-    requestAnimationFrame(mainLoop);
   }
 
+  /**
+   * main game loop
+   */
+  gameLoop = () => {
 
+    if (Math.random() > 0.95) {
+      //at least 25, but no more than 100
+      const sz = 25 + Math.random() * 75;
+      const classes = ['red', 'green', 'blue'];
+      const className = classes[Math.floor(Math.random() * 3)];
+      let s = new Sprite(className, sz, sz, this.arena.element);
+      s.positionSprite(-100, Math.random() * (AH - 100));
+      s.setSpeed(1 + Math.random() * 3, 0);
+      this.npc.push(s);
+      this.stars.push(s);
+    }
+
+    this.npc.forEach((s) => {
+      s.update();
+    });
+
+    this.stars.forEach((s) => {
+      if (s.x > AW) {
+        this.npc = this.npc.filter(sp => sp !== s);
+        this.stars = this.stars.filter(sp => sp !== s);
+        s.kill();
+      }
+    });
+
+    if (this.state === states.gameScreen) {
+      requestAnimationFrame(this.gameLoop);
+    }
+  }
 }
 
 /**
