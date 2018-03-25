@@ -9,6 +9,12 @@ let D = null;
 const AW = 800;
 const AH = 600;
 
+const TW = 50;
+const TH = 50;
+
+const words = ['LIGHTNING', 'PLATYPUS', 'DEMENTED', 'ONOMATOPOEIA', 'YOUTHQUAKE', 'SKIING', 'DRAGON'];
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
 class Sprite {
 
   constructor(className, w, h, arena) {
@@ -37,7 +43,10 @@ class Sprite {
   setSpeed(xs, ys) {
     this.xs = xs;
     this.ys = ys;
+  }
 
+  setText(t) {
+    this.element.textContent = t;
   }
 
   update() {
@@ -53,7 +62,7 @@ class CameronsGame {
   constructor() {
     D = document;
     B = D.body;
-    this.nextState(states.startScreen);
+    this.nextState(states.gameScreen);
   }
 
   /**
@@ -95,16 +104,20 @@ class CameronsGame {
     B.innerHTML = null;
     B.className = 'game-screen';
 
-    this.arena = new Sprite('arena', AW, AH, B);
-
     B.insertAdjacentHTML('beforeend', `
-      <br>
+      <div class="arena"></div>
+      <div class="tray"></div>
       <button id="quit">End</button>
     `);
+
+    this.tray = B.querySelector('.tray');
+    this.arena = B.querySelector('.arena');
 
     B.querySelector('#quit').addEventListener('click', () => {
       this.nextState(states.startScreen);
     });
+
+    this.setWord();
 
     this.npc = [];
     this.stars = [];
@@ -118,13 +131,10 @@ class CameronsGame {
   gameLoop = () => {
 
     if (Math.random() > 0.95) {
-      //at least 25, but no more than 100
-      const sz = 25 + Math.random() * 75;
-      const classes = ['red', 'green', 'blue'];
-      const className = classes[Math.floor(Math.random() * 3)];
-      let s = new Sprite(className, sz, sz, this.arena.element);
+      let s = new Sprite('tile', TW, TH, this.arena);
       s.positionSprite(-100, Math.random() * (AH - 100));
       s.setSpeed(1 + Math.random() * 3, 0);
+      s.setText(this.randomArray(letters));
       this.npc.push(s);
       this.stars.push(s);
     }
@@ -144,7 +154,30 @@ class CameronsGame {
     if (this.state === states.gameScreen) {
       requestAnimationFrame(this.gameLoop);
     }
+  };
+
+  setWord() {
+    this.word = this.randomArray(words);
+    this.tray.innerHTML = null;
+    this.word.split('').forEach(letter => {
+      let s = new Sprite('tile', TW, TH, this.tray);
+      s.setText(letter);
+    })
   }
+
+  /**
+   * return a value is >= minValue and < maxValue
+   * @param minValue
+   * @param maxValue
+   */
+  randomInteger(minValue, maxValue) {
+    return minValue + Math.floor(Math.random() * (maxValue - minValue));
+  }
+
+  randomArray(a) {
+    return a[this.randomInteger(0, a.length)];
+  }
+
 }
 
 /**
